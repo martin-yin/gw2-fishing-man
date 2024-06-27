@@ -84,7 +84,6 @@ def macth_red_exclamatory(image, debug=False):
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     timestr = time.strftime("%Y%m%d_%H%M%S")
-    cv2.imwrite(f'./find_purple/debug-{timestr}.png', image)
 
     for contour in contours:
         (x,y,w,h) = cv2.boundingRect(contour)
@@ -122,8 +121,7 @@ def match_bar_position(template_image, target_image, draw=False, borderColor=(0,
 
     return postion, center
 
-
-def extract_blue_area(image):
+def extract_blue_area(image, draw=False):
     if image is None:
         return (None, None)
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -140,11 +138,11 @@ def extract_blue_area(image):
     
     best_contour = sorted_contours[0]
 
-    # Draw bounding box around the best contour
     x, y, w, h = cv2.boundingRect(best_contour)
-    
-    position = (x, y, x + w, y + h)
+    # if draw:
+    #     cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
 
+    position = (x, y, x + w, y + h)
     center = (x + w / 2, y + h / 2)
     
     return position, center

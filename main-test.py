@@ -17,8 +17,3 @@ def extract_blue_area(image_path):
         cv2.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
     return image
-
-# 调用函数，记得替换图片路径
-blue_area = extract_blue_area('1719417368.5994508.png')
-Image.fromarray(blue_area).show()
-cv2.imwrite('blue_area.png', blue_area)

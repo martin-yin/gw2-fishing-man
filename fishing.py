@@ -17,7 +17,7 @@ class Fishing:
         # 上鱼状态的位置
         self.hook_position = (0,0, 0, 0)
         self.drag_position = (0, 0, 0, 0)
-
+        self.not_find_bar_count = 0
         self.gw2 = gw2
         self.gw2.acitvation_window()
         time.sleep(0.5)
@@ -37,14 +37,12 @@ class Fishing:
                 exit()
 
         self.rod_position = real_position(self.gw2.position, position[0])
-        print(f'鱼竿的坐标：{self.rod_position}')
 
     def init_hook_position(self):
         # 游戏窗口中心点位置
         center_one = self.gw2.center_position[0]
         center_two = self.gw2.center_position[1]
         self.hook_position = (center_one - 80, center_two + 50 , center_one + 80, center_two + 220)
-        print(self.hook_position)
 
     def init_drag_position(self):
         center_one = self.gw2.center_position[0]
@@ -52,6 +50,7 @@ class Fishing:
         self.drag_position = (center_one - 290, center_two + 300, center_one + 290, center_two + 400)
 
     def get_rod_state(self):
+        self.not_find_bar_count = 0
         rod_image = self.gw2.window_screenshot(self.rod_position)
         position = match_image(self.fish_throw, rod_image)
         if len(position) == 0:
@@ -68,23 +67,21 @@ class Fishing:
 
     def get_action(self):
         bar_image = self.gw2.window_screenshot(self.drag_position)
-        # cv2.imwrite(f'{time.time()}.png', bar_image)
-        bar_center_box, bar_center_position = match_bar_position(self.fish_bar_center, bar_image)
-        bar_box, bar_position = extract_blue_area(bar_image)
+        bar_center_box, bar_center_position = match_bar_position(self.fish_bar_center, bar_image, True)
+        bar_box, bar_position = extract_blue_area(bar_image, True)
+
         if bar_position is None or bar_center_position is None:
-            print("未找到拉扯框")
+            self.not_find_bar_count += 1
+            print(f"没有找到 not_find_bar_count 的次数:{self.not_find_bar_count}")
             return
-        
-        print(f'拉扯框坐标：{bar_box}')
-        print(f'中心点坐标：{bar_center_box}')
-        if bar_center_box[2] + 40 > bar_box[2]:
-            print("中心点大于 bar_box 右侧")
+        else:
+            self.not_find_bar_count = 0
+
+        if bar_center_box[2] + 30 > bar_box[2]:
             key_up(self.gw2.hwnd, 48 + 2)
             key_down(self.gw2.hwnd, 48 + 3)
 
-        if bar_center_box[0] - 40 < bar_box[0]:
-            print("中心点大于 bar_box 左侧")            
-            print(bar_center_position[0], bar_box[0])            
+        if bar_center_box[0] - 30 < bar_box[0]:
             key_up(self.gw2.hwnd, 48 + 3)
             key_down(self.gw2.hwnd, 48 + 2)
         
@@ -92,9 +89,13 @@ class Fishing:
         if self.fish_state is None:
             exit()
 
-        print(f'当前鱼竿状态：{self.fish_state}')
+        if self.not_find_bar_count > 50:
+            self.reset_fish_state()
+            print('重置状态！')
+            time.sleep(0.5)
+            return
+        
         if self.fish_state == "等待抛杆":
-            # 抛竿操作，抛竿后等待 3 秒在继续截图
             self.fish_state = "等待收杆"
             post_key_event(self.gw2.hwnd, 48 + 1)
             time.sleep(3)
@@ -106,9 +107,11 @@ class Fishing:
                 post_key_event(self.gw2.hwnd, 48 + 1)
             time.sleep(0.3)
             return
+        
         if  self.fish_state == "收杆拉扯":
-            print("收杆拉扯……")
+            print(f"未知状态:{self.fish_state}")
             self.get_action()
             time.sleep(0.1)
             return
+        
         return False
