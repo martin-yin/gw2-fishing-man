@@ -47,7 +47,7 @@ class Fishing:
     def init_drag_position(self):
         center_one = self.gw2.center_position[0]
         center_two = self.gw2.center_position[1]
-        self.drag_position = (center_one - 290, center_two + 300, center_one + 290, center_two + 400)
+        self.drag_position = (center_one - 220, center_two + 350, center_one + 220, center_two + 446)
 
     def get_rod_state(self):
         self.not_find_bar_count = 0
