@@ -124,6 +124,8 @@ def match_bar_position(template_image, target_image, draw=False, borderColor=(0,
 def extract_blue_area(image, draw=False):
     if image is None:
         return (None, None)
+    
+    print("图片呢？")
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([100, 50, 50])
     upper_blue = np.array([130, 255, 255])
@@ -139,10 +141,37 @@ def extract_blue_area(image, draw=False):
     best_contour = sorted_contours[0]
 
     x, y, w, h = cv2.boundingRect(best_contour)
-    # if draw:
-    #     cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
+    cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
+    if draw:
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
 
     position = (x, y, x + w, y + h)
     center = (x + w / 2, y + h / 2)
     
     return position, center
+
+# 判断钓鱼鱼钩图是否存在
+
+def match_hook(template_image, target_image, draw=False):
+    if template_image is None:
+        return (None, None)
+    
+    if target_image is None:
+        return (None, None)
+    
+    match_result = cv2.matchTemplate(cv2.cvtColor(target_image, cv2.COLOR_BGR2GRAY), cv2.cvtColor(template_image, cv2.COLOR_BGR2GRAY), cv2.TM_CCOEFF_NORMED)
+    min_val_orange, max_val_orange, min_loc_orange, max_loc_orange = cv2.minMaxLoc(match_result)
+
+    if max_val_orange > 0.85:
+        center = (max_loc_orange[0] + template_image.shape[1] / 2, max_loc_orange[1] + template_image.shape[0] / 2)
+        postion = (max_loc_orange[0], max_loc_orange[1], max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0])
+        if draw:
+            cv2.rectangle(target_image, (max_loc_orange[0], max_loc_orange[1]), 
+                          (max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0]), (0, 255, 0), 2)
+            target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
+            cv2.imwrite(f'./match_hook/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', target_image)
+        return postion, center
+    
+    else:
+        return None, None

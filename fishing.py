@@ -2,7 +2,7 @@ import time
 import cv2
 from gw2_window import GW2Window
 from utils.keybord import key_down, key_up, post_key_event
-from utils.match_image import extract_blue_area, macth_red_exclamatory, match_bar_position, match_image
+from utils.match_image import extract_blue_area, macth_red_exclamatory, match_bar_position, match_hook, match_image
 from utils.show_target import Show_target, real_position
 
 class Fishing:
@@ -10,13 +10,15 @@ class Fishing:
         self.fish_throw = cv2.imread('./images/throw.png')
         self.fish_collect = cv2.imread('./images/collect.png')
         self.fish_bar_center = cv2.imread('./images/bar-center.png')
-
+        self.fish_bar_hook = cv2.imread('./images/bar-hook.png')
+        
         self.fish_state = None
         # 鱼竿的位置
         self.rod_position = (0, 0, 0, 0)
         # 上鱼状态的位置
         self.hook_position = (0,0, 0, 0)
         self.drag_position = (0, 0, 0, 0)
+
         self.not_find_bar_count = 0
         self.gw2 = gw2
         self.gw2.acitvation_window()
@@ -47,7 +49,7 @@ class Fishing:
     def init_drag_position(self):
         center_one = self.gw2.center_position[0]
         center_two = self.gw2.center_position[1]
-        self.drag_position = (center_one - 220, center_two + 350, center_one + 220, center_two + 446)
+        self.drag_position = (center_one - 216, center_two + 354, center_one + 216, center_two + 390)
 
     def get_rod_state(self):
         self.not_find_bar_count = 0
@@ -67,16 +69,18 @@ class Fishing:
 
     def get_action(self):
         bar_image = self.gw2.window_screenshot(self.drag_position)
-        bar_center_box, bar_center_position = match_bar_position(self.fish_bar_center, bar_image, True)
+        # _, hook_position = match_hook(self.fish_bar_hook, bar_image, False)
+
+        # if hook_position is None:
+        #     self.not_find_bar_count += 1
+        #     return 
+        bar_center_box, bar_center_position = match_bar_position(self.fish_bar_center, bar_image)
         bar_box, bar_position = extract_blue_area(bar_image, True)
+        print(f"bar_center_position:{bar_center_position}, bar_position:{bar_position}")
 
         if bar_position is None or bar_center_position is None:
-            self.not_find_bar_count += 1
-            print(f"没有找到 not_find_bar_count 的次数:{self.not_find_bar_count}")
             return
-        else:
-            self.not_find_bar_count = 0
-
+        self.not_find_bar_count = 0
         if bar_center_box[2] + 30 > bar_box[2]:
             key_up(self.gw2.hwnd, 48 + 2)
             key_down(self.gw2.hwnd, 48 + 3)
@@ -89,10 +93,12 @@ class Fishing:
         if self.fish_state is None:
             exit()
 
-        if self.not_find_bar_count > 50:
+        print(f"当前{self.fish_state}状态")
+
+        if self.not_find_bar_count > 10:
+            time.sleep(4)
             self.reset_fish_state()
             print('重置状态！')
-            time.sleep(0.5)
             return
         
         if self.fish_state == "等待抛杆":
@@ -109,7 +115,6 @@ class Fishing:
             return
         
         if  self.fish_state == "收杆拉扯":
-            print(f"未知状态:{self.fish_state}")
             self.get_action()
             time.sleep(0.1)
             return
