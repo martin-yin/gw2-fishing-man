@@ -5,9 +5,9 @@ import win32con
 
 
 # 参数左上右下
-def Show_target(box):
+def Show_target(box, color=(255, 0, 255)):
     hwnd = win32gui.GetDesktopWindow()
-    hPen = win32gui.CreatePen(win32con.PS_SOLID, 3, win32api.RGB(255, 0, 255))  # 定义框颜色
+    hPen = win32gui.CreatePen(win32con.PS_SOLID, 3, win32api.RGB(color[0], color[1], color[2]))  # 定义框颜色
     hwndDC = win32gui.GetDC(hwnd)  # 根据窗口句柄获取窗口的设备上下文DC（Divice Context）
     win32gui.SelectObject(hwndDC, hPen)
     hbrush = win32gui.GetStockObject(win32con.NULL_BRUSH)  # 定义透明画刷，这个很重要！！

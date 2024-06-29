@@ -125,7 +125,6 @@ def extract_blue_area(image, draw=False):
     if image is None:
         return (None, None)
     
-    print("图片呢？")
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     lower_blue = np.array([100, 50, 50])
     upper_blue = np.array([130, 255, 255])
@@ -141,7 +140,7 @@ def extract_blue_area(image, draw=False):
     best_contour = sorted_contours[0]
 
     x, y, w, h = cv2.boundingRect(best_contour)
-    cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
+    
     if draw:
         cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
         cv2.imwrite(f'./extract_blue_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
