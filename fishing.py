@@ -44,7 +44,7 @@ class Fishing:
         if len(position) == 0:
             position = match_image(self.skill_collect, image)
             if len(position) == 0:
-                print(f'未找到{self.fish_state}图标')
+                print(f'未找到{self.fish_state}图标, 执行退出')
                 exit()
 
         self.skill_position = real_position(self.gw2.position, position[0])
@@ -77,7 +77,9 @@ class Fishing:
         if len(position) == 0:
             position = match_image(self.skill_collect, skill_image)
             if len(position) == 0:
-                print(f'未找到{self.fish_state}图标')
+                print(f'未找到{self.fish_state}图标，等待 2 秒后继续查找')
+                time.sleep(2)
+                self.fish_state = "等待抛杆"
             self.fish_state = "等待收杆"
         else:
             self.fish_state = "等待抛杆"
@@ -100,11 +102,11 @@ class Fishing:
             return
         
         self.not_find_bar_count = 0
-        if bar_center_box[2] + 10 > bar_box[2]:
+        if bar_center_box[2] + 30 > bar_box[2]:
             key_up(self.gw2.hwnd, 48 + 2)
             key_down(self.gw2.hwnd, 48 + 3)
 
-        if bar_center_box[0] - 10 < bar_box[0]:
+        if bar_center_box[0] - 30 < bar_box[0]:
             key_up(self.gw2.hwnd, 48 + 3)
             key_down(self.gw2.hwnd, 48 + 2)
 
@@ -115,7 +117,7 @@ class Fishing:
         print(f"当前{self.fish_state}状态")
         
         if self.not_find_hook_count > 10:
-            time.sleep(2)
+            time.sleep(4)
             self.reset_fish_state()
             print('重新获取钓鱼状态')
 
