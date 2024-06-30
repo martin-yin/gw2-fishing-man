@@ -73,7 +73,6 @@ class Fishing:
 
     def get_filsh_state_width_skill(self):
         """ 通过技能来判断当前的钓鱼状态 """
-        self.not_find_hook_count = 0
         skill_image = self.gw2.window_screenshot(self.skill_position)
         position = match_image(self.skill_throw, skill_image)
         if len(position) == 0:
@@ -81,11 +80,13 @@ class Fishing:
             if len(position) == 0:
                 print(f'未找到{self.fish_state}图标，等待 2 秒后继续查找')
                 time.sleep(2)
-                self.not_find_hook_count = 10
-                self.fish_state = "等待抛杆"
+                return
             self.fish_state = "等待收杆"
+            self.not_find_hook_count = 0
         else:
             self.fish_state = "等待抛杆"
+            self.not_find_hook_count = 0
+
         print(f'当前钓鱼状态：{self.fish_state}')
 
     def reset_fish_state(self):
@@ -107,7 +108,7 @@ class Fishing:
         bar_center_middle = (bar_center_box[0] + bar_center_box[2]) / 2
         bar_middle = (bar_box[0] + bar_box[2]) / 2
 
-        dead_zone = 2  # 死区范围，可以根据实际情况调整
+        dead_zone = 2 
         if abs(bar_center_middle - bar_middle) <= dead_zone:
             # 在死区范围内，不进行任何调整
             key_up(self.gw2.hwnd, 48 + 2)
