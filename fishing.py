@@ -2,7 +2,7 @@ import time
 import cv2
 from gw2_window import GW2Window
 from utils.keybord import key_down, key_up, post_key_event
-from utils.match_image import extract_blue_area, macth_red_exclamatory, match_bar_position, match_hook, match_image
+from utils.match_image import extract_blue_area, extract_green_area, macth_red_exclamatory, match_bar_position, match_hook, match_image
 from utils.show_target import Show_target, real_position
 
 class Fishing:
@@ -79,45 +79,44 @@ class Fishing:
             if len(position) == 0:
                 print(f'未找到{self.fish_state}图标，等待 2 秒后继续查找')
                 time.sleep(2)
+                self.not_find_hook_count = 10
                 self.fish_state = "等待抛杆"
             self.fish_state = "等待收杆"
         else:
             self.fish_state = "等待抛杆"
+        print(f'当前钓鱼状态：{self.fish_state}')
 
     def reset_fish_state(self):
         self.get_filsh_state_width_skill()
 
     def drag_action(self):
-        drag_hook_image = self.gw2.window_screenshot(self.drag_hook_position)
-        _, hook_position = match_hook(self.drag_hook, drag_hook_image, False)
-        if hook_position is None:
-            self.not_find_hook_count += 1
-            return 
-        
         bar_image = self.gw2.window_screenshot(self.drag_bar_position)
-        bar_center_box, bar_center_position = match_bar_position(self.drag_bar_center, bar_image)
-
+        # 需要增加面积的判断
+        bar_center_box, bar_center_position = extract_green_area(bar_image, False)
         bar_box, bar_position = extract_blue_area(bar_image, False)
-        if bar_position is None or bar_center_position is None:
+        if bar_center_box is None or bar_box is None:
+            self.not_find_hook_count += 1
+            print(f"找不到钓鱼钩子的次数：{self.not_find_hook_count}")
             return
-        
+        # 计算拉扯条的中心位置
         self.not_find_bar_count = 0
+       
         if bar_center_box[2] + 30 > bar_box[2]:
             key_up(self.gw2.hwnd, 48 + 2)
             key_down(self.gw2.hwnd, 48 + 3)
+            return
 
         if bar_center_box[0] - 30 < bar_box[0]:
             key_up(self.gw2.hwnd, 48 + 3)
             key_down(self.gw2.hwnd, 48 + 2)
-
+            return
     def fish_action(self):
         """ 钓鱼操作 """
         if self.fish_state is None:
             exit()
-        print(f"当前{self.fish_state}状态")
-        
+   
         if self.not_find_hook_count > 10:
-            time.sleep(4)
+            time.sleep(6)
             self.reset_fish_state()
             print('重新获取钓鱼状态')
 
@@ -135,6 +134,7 @@ class Fishing:
             return
         
         if  self.fish_state == "收杆拉扯":
+            print(f"当前状态 {self.fish_state}")
             self.drag_action()
-            time.sleep(0.1)
             return
+        

@@ -121,18 +121,47 @@ def match_bar_position(template_image, target_image, draw=False, borderColor=(0,
 
     return postion, center
 
+
+def extract_green_area(image, draw=False):
+    if image is None:
+        return (None, None)
+    
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    lower_green = np.array([35, 50, 50])
+    upper_green = np.array([85, 255, 255])
+
+    mask = cv2.inRange(hsv, lower_green, upper_green)
+    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Filter contours by area
+    sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+    if len(sorted_contours) == 0:
+        return None, None
+    
+    best_contour = sorted_contours[0]
+
+    x, y, w, h = cv2.boundingRect(best_contour)
+    
+    if draw:
+        cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.imwrite(f'./extract_greeen_area/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', image)
+
+    position = (x, y, x + w, y + h)
+    center = (x + w / 2, y + h / 2)
+    
+    return position, center
+
 def extract_blue_area(image, draw=False):
     if image is None:
         return (None, None)
     
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower_blue = np.array([100, 50, 50])
-    upper_blue = np.array([130, 255, 255])
+    lower_blue = np.array( [80, 100, 100])
+    upper_blue = np.array([110, 255, 255])
 
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Filter contours by area
     sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
     if len(sorted_contours) == 0:
         return None, None
