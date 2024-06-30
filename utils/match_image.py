@@ -167,7 +167,6 @@ def extract_blue_area(image, draw=False):
         return None, None
     
     best_contour = sorted_contours[0]
-
     x, y, w, h = cv2.boundingRect(best_contour)
     
     if draw:
@@ -191,7 +190,7 @@ def match_hook(template_image, target_image, draw=False):
     match_result = cv2.matchTemplate(cv2.cvtColor(target_image, cv2.COLOR_BGR2GRAY), cv2.cvtColor(template_image, cv2.COLOR_BGR2GRAY), cv2.TM_CCOEFF_NORMED)
     min_val_orange, max_val_orange, min_loc_orange, max_loc_orange = cv2.minMaxLoc(match_result)
 
-    if max_val_orange > 0.85:
+    if max_val_orange > 0.7:
         center = (max_loc_orange[0] + template_image.shape[1] / 2, max_loc_orange[1] + template_image.shape[0] / 2)
         postion = (max_loc_orange[0], max_loc_orange[1], max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0])
         if draw:

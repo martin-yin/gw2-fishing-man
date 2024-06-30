@@ -20,6 +20,8 @@ class Fishing:
         # 钓鱼拉扯中的绿色图标
         self.drag_bar_center = cv2.imread('./images/drag_bar_center.png')
 
+
+        self.last_bar_center_position = None
         """图标位置"""
         self.skill_position = (0, 0, 0, 0)
         self.exclamation_position = (0, 0, 0, 0)
@@ -90,17 +92,21 @@ class Fishing:
         self.get_filsh_state_width_skill()
 
     def drag_action(self):
+        drag_hook_image = self.gw2.window_screenshot(self.drag_hook_position)
+        _, hook_position = match_hook(self.drag_hook, drag_hook_image, False)
+        if hook_position is None:
+            self.not_find_hook_count += 1
+            return 
+        
         bar_image = self.gw2.window_screenshot(self.drag_bar_position)
-        # 需要增加面积的判断
         bar_center_box, bar_center_position = extract_green_area(bar_image, False)
         bar_box, bar_position = extract_blue_area(bar_image, False)
         if bar_center_box is None or bar_box is None:
             self.not_find_hook_count += 1
             print(f"找不到钓鱼钩子的次数：{self.not_find_hook_count}")
             return
-        # 计算拉扯条的中心位置
-        self.not_find_bar_count = 0
-       
+        
+        
         if bar_center_box[2] + 30 > bar_box[2]:
             key_up(self.gw2.hwnd, 48 + 2)
             key_down(self.gw2.hwnd, 48 + 3)
