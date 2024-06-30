@@ -102,20 +102,27 @@ class Fishing:
         bar_center_box, bar_center_position = extract_green_area(bar_image, False)
         bar_box, bar_position = extract_blue_area(bar_image, False)
         if bar_center_box is None or bar_box is None:
-            self.not_find_hook_count += 1
-            print(f"找不到钓鱼钩子的次数：{self.not_find_hook_count}")
             return
         
-        
-        if bar_center_box[2] + 30 > bar_box[2]:
+        bar_center_middle = (bar_center_box[0] + bar_center_box[2]) / 2
+        bar_middle = (bar_box[0] + bar_box[2]) / 2
+
+        dead_zone = 2  # 死区范围，可以根据实际情况调整
+        if abs(bar_center_middle - bar_middle) <= dead_zone:
+            # 在死区范围内，不进行任何调整
             key_up(self.gw2.hwnd, 48 + 2)
-            key_down(self.gw2.hwnd, 48 + 3)
+            key_up(self.gw2.hwnd, 48 + 3)
             return
 
-        if bar_center_box[0] - 30 < bar_box[0]:
+        if bar_center_middle < bar_middle - dead_zone:
             key_up(self.gw2.hwnd, 48 + 3)
             key_down(self.gw2.hwnd, 48 + 2)
-            return
+         
+        elif bar_center_middle > bar_middle + dead_zone:
+            key_up(self.gw2.hwnd, 48 + 2)
+            key_down(self.gw2.hwnd, 48 + 3)
+         
+            
     def fish_action(self):
         """ 钓鱼操作 """
         if self.fish_state is None:
