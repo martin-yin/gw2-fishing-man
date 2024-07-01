@@ -54,21 +54,22 @@ class Fishing:
     def init_exclamation_position(self): 
         """ 初始化 感叹号的位置 """
         center_one = self.gw2.center_position[0]
-        center_two = self.gw2.center_position[1]
-        self.exclamation_position = (center_one - 80, center_two + 50 , center_one + 80, center_two + 220)
+        game_postion = self.gw2.position
+        self.exclamation_position = (center_one - 60, game_postion[3] - 762, center_one + 60, game_postion[3] - 602)
     
-
     def init_drag_hook_position(self):
         """ 钓鱼拉扯的位置"""
         center_one = self.gw2.center_position[0]
-        center_two = self.gw2.center_position[1]
-        self.drag_hook_position = (center_one - 214, center_two + 392, center_one - 166, center_two + 440)
+        game_postion = self.gw2.position
+        self.drag_hook_position = (center_one - 214, game_postion[3] - 452, center_one - 166, game_postion[3] - 404)
         
     def init_drag_bar_bposition(self):
         """ 拉扯条的位置"""
         center_one = self.gw2.center_position[0]
         center_two = self.gw2.center_position[1]
-        self.drag_bar_position = (center_one - 216, center_two + 354, center_one + 216, center_two + 390)
+        game_postion = self.gw2.position
+        position = (center_one - 216, game_postion[3] - 490, center_one + 216, game_postion[3] - 452)
+        self.drag_bar_position = position
         
 
     def get_filsh_state_width_skill(self):

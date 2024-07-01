@@ -13,10 +13,10 @@ if __name__ == '__main__':
     fish.init_position()
     fish.reset_fish_state()
     while True:
-        fish.fish_action()
-        # Show_target(fish.skill_position)
-        # Show_target(fish.exclamation_position)
-        # Show_target(fish.drag_bar_position)
-        # Show_target(fish.drag_hook_position)
+        # fish.fish_action()
+        Show_target(fish.skill_position)
+        Show_target(fish.exclamation_position)
+        Show_target(fish.drag_bar_position)
+        Show_target(fish.drag_hook_position)
         
         

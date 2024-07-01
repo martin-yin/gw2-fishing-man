@@ -74,8 +74,8 @@ def macth_red_exclamatory(image, debug=False):
     if image is None:
         return []
     is_find = False
-    lower_purple = np.array([125, 70, 70])  # 注意调整这些值以匹配实际紫色
-    upper_purple = np.array([155, 255, 255])  # HSV色彩空间中紫色的大致范围
+    lower_purple = np.array([125, 70, 70]) 
+    upper_purple = np.array([155, 255, 255]) 
 
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     mask = cv2.inRange(hsv, lower_purple, upper_purple)
@@ -89,7 +89,7 @@ def macth_red_exclamatory(image, debug=False):
         (x,y,w,h) = cv2.boundingRect(contour)
         aspect_ratio = w / float(h)
         area = cv2.contourArea(contour)
-        if 0.5 < aspect_ratio < 1.3 and 350 < area < 1000:  # 示例参数，根据实际调整
+        if 0.5 < aspect_ratio < 1.3 and 350 < area < 1000:
             cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
             is_find = True
             break
@@ -100,7 +100,6 @@ def macth_red_exclamatory(image, debug=False):
     return is_find
 
 
-# 用来抓取钓鱼状态的拉扯使用
 def match_bar_position(template_image, target_image, draw=False, borderColor=(0, 255, 0), borderThickness=2):
     if template_image is None:
         return (None, None)
