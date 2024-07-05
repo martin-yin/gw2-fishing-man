@@ -32,8 +32,6 @@ def real_position(game_postion, target_postion):
     right = left + target_postion[2] - target_postion[0]
     bottom = top + target_postion[3] - target_postion[1]
 
-    print(left, top, right, bottom)
-    
     return (left, top, right, bottom)
 
 # 计算坐标偏移
@@ -45,23 +43,27 @@ def offset_position(position, offset):
     return (left, top, right, bottom)
 
 
+def map_virtual_key(vk_code):
+    return win32api.MapVirtualKey(vk_code, 0)
+
+# 发送键盘事件
+def key_down_up(hwnd, vk_code):
+    scan_code = map_virtual_key(vk_code)
+
+    lParam_KeyDown = (1 << 0) | (scan_code << 16) | (0 << 24) | (0 << 29) | (0 << 30) | (0 << 31)
+    lParam_KeyUp = (1 << 0) | (scan_code << 16) | (0 << 24) | (0 << 29) | (1 << 30) | (1 << 31)
+    win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, vk_code, lParam_KeyDown)
+    win32gui.PostMessage(hwnd, win32con.WM_KEYUP, vk_code,lParam_KeyUp)
+
 def key_down(hwnd, vk_code):
-    scan_code = win32api.MapVirtualKey(vk_code, 0)
+    scan_code = map_virtual_key(vk_code)
     lParam_KeyDown = (1 << 0) | (scan_code << 16) | (0 << 24) | (0 << 29) | (0 << 30) | (0 << 31)
     win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, vk_code, lParam_KeyDown)
 
 def key_up(hwnd, vk_code):
-    scan_code = win32api.MapVirtualKey(vk_code, 0)
+    scan_code = map_virtual_key(vk_code)
     lParam_KeyUp = (1 << 0) | (scan_code << 16) | (0 << 24) | (0 << 29) | (1 << 30) | (1 << 31)
     win32gui.PostMessage(hwnd, win32con.WM_KEYUP, vk_code,lParam_KeyUp)
-
-def key_down_up(hwnd, vk_code):
-    scan_code = win32api.MapVirtualKey(vk_code, 0)
-    key_up_lParam = (win32con.KEYEVENTF_SCANCODE << 16) | scan_code
-    key_down_lParam = ( win32con.KEYEVENTF_SCANCODE | win32con.KEYEVENTF_KEYUP << 16) | scan_code
-    win32gui.PostMessage(hwnd, win32con.WM_KEYUP, vk_code, key_up_lParam)
-    win32gui.PostMessage(hwnd, win32con.WM_KEYDOWN, vk_code, key_down_lParam)
-
 
 def load_config(file_path):
     """

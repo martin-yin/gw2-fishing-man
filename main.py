@@ -30,7 +30,7 @@ if __name__ == '__main__':
         if state == 1:
             print("等待鱼儿上钩")
             time.sleep(0.5)
-
+            
         if state == 2:
             fishing.drag_action()
         
