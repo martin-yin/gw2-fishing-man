@@ -3,7 +3,7 @@ import cv2
 from gw2_window import GW2Window
 from utils.keybord import key_down, key_up, post_key_event
 from utils.match_image import extract_blue_area, extract_green_area, macth_red_exclamatory, match_bar_position, match_hook, match_image
-from utils.show_target import Show_target, real_position
+from utils.show_target import real_position
 
 class Fishing:
     def __init__(self, gw2: GW2Window):

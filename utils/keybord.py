@@ -23,3 +23,12 @@ def key_up(hwnd, vk_code):
     scan_code = map_virtual_key(vk_code)
     lParam_KeyUp = (1 << 0) | (scan_code << 16) | (0 << 24) | (0 << 29) | (1 << 30) | (1 << 31)
     win32gui.PostMessage(hwnd, win32con.WM_KEYUP, vk_code,lParam_KeyUp)
+
+
+# 发送键盘事件
+def post_key_event(self, vk_code):
+    scan_code = self.map_virtual_key(vk_code)
+    key_up_lParam = (win32con.KEYEVENTF_SCANCODE << 16) | scan_code
+    key_down_lParam = ( win32con.KEYEVENTF_SCANCODE | win32con.KEYEVENTF_KEYUP << 16) | scan_code
+    win32gui.PostMessage(self.hwnd, win32con.WM_KEYUP, vk_code, key_up_lParam)
+    win32gui.PostMessage(self.hwnd, win32con.WM_KEYDOWN, vk_code, key_down_lParam)
