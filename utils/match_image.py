@@ -41,18 +41,18 @@ def non_max_suppression_fast(boxes, overlapThresh):
     return boxes[pick].astype("int")
 
 
-def match_image(image, template, draw=False):
+def match_image(image_gray, template, draw=False):
     # 转换为灰度图像
-    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     if template is None:
         return []
+    
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
     result = cv2.matchTemplate(image_gray, template_gray, cv2.TM_CCOEFF_NORMED)
     threshold = 0.8
     loc = np.where(result >= threshold)
     rectangles = []
     for pt in zip(*loc[::-1]):
-        rect = [int(pt[0]), int(pt[1]), int(pt[0] + image.shape[1]), int(pt[1] + image.shape[0])]
+        rect = [int(pt[0]), int(pt[1]), int(pt[0] + image_gray.shape[1]), int(pt[1] + image_gray.shape[0])]
         rectangles.append(rect)
         rectangles.append(rect)  
 
@@ -67,7 +67,7 @@ def match_image(image, template, draw=False):
         timestr = time.strftime("%Y%m%d_%H%M%S")
         cv2.imwrite(f'./match_image/{timestr}.png', template)
 
-    return pick
+    return pick[0]
 
 
 def macth_red_exclamatory(image, debug=False):

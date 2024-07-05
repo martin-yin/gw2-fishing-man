@@ -1,31 +1,23 @@
 import time
-import cv2
-from win32gui import FindWindow, GetWindowRect, SetForegroundWindow, GetDesktopWindow
-import numpy as np
-import ctypes
-from fishing import Fishing
-from gw2_window import GW2Window
-from PIL import Image
-import win32gui
-import win32api
-import win32gui
-import win32con
+from win32gui import FindWindow, SetForegroundWindow
+from environment.image_postion import FishImagePosition
+from environment.state import FishingState
+from utils.utils import Camera, load_config
 
-from utils.show_target import position_border_draw
-
-# from utils.show_target import Show_target
 if __name__ == '__main__':
-    gw2 = GW2Window()
-    fish = Fishing(gw2)
-    fish.init_position()
-    fish.reset_fish_state()
     hwnd = FindWindow(None, "激战2")
-
-
+    carmera = Camera()
+    SetForegroundWindow(hwnd)
     time.sleep(1)
+    config = load_config("./config.yaml")
+    # 获取图标位置
+    fish_image_positon = FishImagePosition(hwnd, carmera, config['position'])
+
+    skill = fish_image_positon.skill_position
+    exclamation = fish_image_positon.exclamation_position
+    drag_hook = fish_image_positon.drag_hook_position
+    fish_state = FishingState(carmera,skill, exclamation, drag_hook)
+    
     while True:
-        fish.fish_action()
-        # box = (50, 50, 200, 200) 
-        # position_border_draw(hwnd, box)
-        
-        
+        state = fish_state.get_state()  
+        print(state)

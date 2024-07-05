@@ -1,9 +1,8 @@
 import time
 import cv2
 from gw2_window import GW2Window
-from utils.keybord import key_down, key_up, post_key_event
 from utils.match_image import extract_blue_area, extract_green_area, macth_red_exclamatory, match_bar_position, match_hook, match_image
-from utils.show_target import real_position
+from utils.utils import key_down, key_up, real_position
 
 class Fishing:
     def __init__(self, gw2: GW2Window):
@@ -19,7 +18,6 @@ class Fishing:
         self.drag_hook = cv2.imread('./images/drag_hook.png')
         # 钓鱼拉扯中的绿色图标
         self.drag_bar_center = cv2.imread('./images/drag_bar_center.png')
-
 
         self.last_bar_center_position = None
         """图标位置"""
