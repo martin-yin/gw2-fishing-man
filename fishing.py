@@ -1,6 +1,5 @@
 import time
 import cv2
-from gw2_window import GW2Window
 from utils.match_image import extract_blue_area, extract_green_area
 from utils.utils import Camera, key_down, key_up
 
