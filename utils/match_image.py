@@ -41,18 +41,21 @@ def non_max_suppression_fast(boxes, overlapThresh):
     return boxes[pick].astype("int")
 
 
-def match_image(image_gray, template, draw=False):
-    # 转换为灰度图像
+def match_image(image, template, draw=False):
+    """ 
+        image: 需要被匹配的图片
+        template: 模板图片
+    """
     if template is None:
         return []
     
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-    result = cv2.matchTemplate(image_gray, template_gray, cv2.TM_CCOEFF_NORMED)
+    result = cv2.matchTemplate(image, template_gray, cv2.TM_CCOEFF_NORMED)
     threshold = 0.8
     loc = np.where(result >= threshold)
     rectangles = []
     for pt in zip(*loc[::-1]):
-        rect = [int(pt[0]), int(pt[1]), int(pt[0] + image_gray.shape[1]), int(pt[1] + image_gray.shape[0])]
+        rect = [int(pt[0]), int(pt[1]), int(pt[0] + image.shape[1]), int(pt[1] + image.shape[0])]
         rectangles.append(rect)
         rectangles.append(rect)  
 
@@ -67,7 +70,7 @@ def match_image(image_gray, template, draw=False):
         timestr = time.strftime("%Y%m%d_%H%M%S")
         cv2.imwrite(f'./match_image/{timestr}.png', template)
 
-    return pick[0]
+    return pick
 
 
 def macth_red_exclamatory(image, debug=False):
@@ -179,24 +182,25 @@ def extract_blue_area(image, draw=False):
 
 # 判断钓鱼鱼钩图是否存在
 
-def match_hook(template_image, target_image, draw=False):
+def match_hook(image, template_image, draw=False):
+    """ 
+        image: 需要被匹配的图片
+        template: 模板图片
+    """
     if template_image is None:
         return (None, None)
     
-    if target_image is None:
-        return (None, None)
-    
-    match_result = cv2.matchTemplate(cv2.cvtColor(target_image, cv2.COLOR_BGR2GRAY), cv2.cvtColor(template_image, cv2.COLOR_BGR2GRAY), cv2.TM_CCOEFF_NORMED)
+    match_result = cv2.matchTemplate(image, cv2.cvtColor(template_image, cv2.COLOR_BGR2GRAY), cv2.TM_CCOEFF_NORMED)
     min_val_orange, max_val_orange, min_loc_orange, max_loc_orange = cv2.minMaxLoc(match_result)
 
     if max_val_orange > 0.7:
         center = (max_loc_orange[0] + template_image.shape[1] / 2, max_loc_orange[1] + template_image.shape[0] / 2)
         postion = (max_loc_orange[0], max_loc_orange[1], max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0])
-        if draw:
-            cv2.rectangle(target_image, (max_loc_orange[0], max_loc_orange[1]), 
-                          (max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0]), (0, 255, 0), 2)
-            target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
-            cv2.imwrite(f'./match_hook/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', target_image)
+        # if draw:
+        #     cv2.rectangle(target_image, (max_loc_orange[0], max_loc_orange[1]), 
+        #                   (max_loc_orange[0] + template_image.shape[1], max_loc_orange[1] + template_image.shape[0]), (0, 255, 0), 2)
+        #     target_image = cv2.cvtColor(target_image, cv2.COLOR_BGR2RGB)
+        #     cv2.imwrite(f'./match_hook/debug-{time.strftime("%Y%m%d_%H%M%S")}.png', target_image)
         return postion, center
     
     else:

@@ -40,8 +40,8 @@ def real_position(game_postion, target_postion):
 def offset_position(position, offset):
     left = position[0] + offset[0]
     top = position[1] + offset[1]
-    right = position[2] + offset[0]
-    bottom = position[3] + offset[1]
+    right = position[2] + offset[2]
+    bottom = position[3] + offset[3]
     return (left, top, right, bottom)
 
 
