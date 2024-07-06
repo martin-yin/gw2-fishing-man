@@ -3,19 +3,16 @@ import cv2
 from win32 import win32gui
 import ctypes
 from environment.image_postion import FishPosition
-from utils.match_image import match_image
+from utils.match_image import get_score_width, match_image
 from utils.utils import get_frame, key_down, key_up
 
 """ 钓鱼环境 """
 class DQNFishing:
-    def __int___(self, drag_bar_position):
+    def __int___(self, drag_bar_position, drag_score_position):
         self.fish_state = None
         self.drag_bar_position = drag_bar_position
+        self.drag_score_position = drag_score_position
     
-    """ 开始新一轮的钓鱼"""
-    def reset(self):
-        return self.get_state()
-
     def get_state(self):
         """ 获取当前拖拽的状态"""
         return get_frame(self.drag_bar_position)
@@ -25,8 +22,13 @@ class DQNFishing:
         self.do_action(action)
         time.sleep(0.01)
         # 计算分数
-        score = 0
-        print(f"本轮分数: {score}")
+        score_frame = get_frame(self.drag_score_position)
+        width = get_score_width(score_frame)
+
+        if width is None:
+            return self.get_state(), 0
+        
+        score = round(width / 318  * 100, 2)
         return self.get_state(), score
 
     """ 执行动作 """

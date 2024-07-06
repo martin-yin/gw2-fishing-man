@@ -22,11 +22,13 @@ class FishImagePosition:
         exclamation_position: 钓鱼提示图标的位置
         drag_hook_position: 钓力图标的位置  
         drag_bar_position: 钓力条的位置
+        drag_score_position: 钓鱼分数的位置
         """
         self.skill_position = (0, 0, 0, 0)
         self.exclamation_position = (0, 0, 0, 0)
         self.drag_hook_position = (0, 0, 0, 0)
         self.drag_bar_position = (0, 0, 0, 0)
+        self.drag_score_position = (0, 0, 0, 0)
 
         self.init_game_window()
         self.init_positions(config_position)
@@ -51,10 +53,13 @@ class FishImagePosition:
         初始化坐标点的位置
         """
         center_x = self.environment_center_position[0]
+        center_ = self.environment_center_position[0]
+
         game_postion = self.environment_position
         exclamation_offset = config_position['exclamation_offset']
         drag_hook_offset = config_position['drag_hook_offset']
         drag_bar_offset = config_position['drag_bar_offset']
+        drag_score_offset = config_position['drag_score_offset']
          
         self.exclamation_position = offset_position(
             (center_x, game_postion[3], center_x, game_postion[3]), 
@@ -69,6 +74,11 @@ class FishImagePosition:
         self.drag_bar_position = offset_position(
             (center_x, game_postion[3], center_x, game_postion[3]), 
             drag_bar_offset
+        )
+        
+        self.drag_score_position = offset_position(
+            (center_x, game_postion[3], center_x, game_postion[3]), 
+            drag_score_offset
         )
 
     def init_skill_position(self, image):

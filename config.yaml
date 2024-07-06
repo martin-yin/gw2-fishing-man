@@ -2,3 +2,4 @@ position:
   exclamation_offset: [-60, -762, 60, -602]
   drag_hook_offset: [-214, -452, -166, -404]
   drag_bar_offset: [-216, -490, 216, -452]
+  drag_score_offset:  [-159, -342, 159, -320]

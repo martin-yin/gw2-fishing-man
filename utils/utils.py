@@ -52,6 +52,9 @@ def offset_position(position, offset):
     top = position[1] + offset[1]
     right = position[2] + offset[2]
     bottom = position[3] + offset[3]
+    print("position", position )
+    print("offset", offset )
+
     return (left, top, right, bottom)
 
 
