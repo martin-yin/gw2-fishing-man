@@ -53,7 +53,6 @@ class FishImagePosition:
         初始化坐标点的位置
         """
         center_x = self.environment_center_position[0]
-        center_ = self.environment_center_position[0]
 
         game_postion = self.environment_position
         exclamation_offset = config_position['exclamation_offset']
