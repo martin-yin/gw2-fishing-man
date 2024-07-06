@@ -10,8 +10,8 @@ class Fishing:
     def drag_action(self):
         hwnd = get_hwnd()
         bar_image = get_frame(self.drag_bar_position)
-        bar_center_box, bar_center_position = extract_green_area(bar_image, False)
-        bar_box, bar_position = extract_blue_area(bar_image, False)
+        bar_center_box, _ = extract_green_area(bar_image, False)
+        bar_box, _ = extract_blue_area(bar_image, False)
         if bar_center_box is None or bar_box is None:
             return
         
