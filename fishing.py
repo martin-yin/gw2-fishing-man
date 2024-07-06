@@ -7,7 +7,7 @@ class Fishing:
     def __init__(self, drag_bar_position):
         self.drag_bar_position = drag_bar_position
         
-    def drag_action(self):
+    def do_action(self):
         hwnd = get_hwnd()
         bar_image = get_frame(self.drag_bar_position)
         bar_center_box, _ = extract_green_area(bar_image, False)

@@ -30,5 +30,5 @@ if __name__ == '__main__':
             time.sleep(0.5)
             
         if state == 2:
-            fishing.drag_action()
+            fishing.do_action()
         

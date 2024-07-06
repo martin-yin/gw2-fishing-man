@@ -4,14 +4,13 @@ from win32 import win32gui
 import ctypes
 from environment.image_postion import FishPosition
 from utils.match_image import match_image
-from utils.utils import key_down, key_up
+from utils.utils import get_frame, key_down, key_up
 
 """ 钓鱼环境 """
 class DQNFishing:
-    def __int___(self, postion: FishPosition):
+    def __int___(self, drag_bar_position):
         self.fish_state = None
-        # self.camera = Camera()
-        self.postion = postion
+        self.drag_bar_position = drag_bar_position
     
     """ 开始新一轮的钓鱼"""
     def reset(self):
@@ -19,7 +18,7 @@ class DQNFishing:
 
     def get_state(self):
         """ 获取当前拖拽的状态"""
-        return self.camera.grab(region=self.postion.drag_bar_position)
+        return get_frame(self.drag_bar_position)
 
     """ 返回 当前状态 和 分数 """
     def step(self, action):
