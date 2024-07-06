@@ -20,7 +20,6 @@ if __name__ == '__main__':
     print("开始钓鱼")
     fishing.reset()
     while True:
-        time.sleep(0.1)
         fishing.get_state() 
         if fishing.state == 1:
             print("等待鱼儿上钩")

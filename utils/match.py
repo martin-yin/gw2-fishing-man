@@ -70,10 +70,10 @@ def match_image(image, template, draw=False):
         return None
     
     template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-    match_result = cv2.matchTemplate(image, template_gray, cv2.TM_CCOEFF_NORMED)
+    match_result = cv2.matchTemplate(template_gray, image, cv2.TM_CCOEFF_NORMED)
     (min_val, max_val, min_loc, max_loc) = cv2.minMaxLoc(match_result)
 
-    if max_val > 0.8:
+    if max_val > 0.9:
         (x, y) = max_loc
         w, h = image.shape[:2]
         end_x = x + w

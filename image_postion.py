@@ -35,7 +35,6 @@ class FishImagePosition:
         frame = get_frame(self.environment_position)
         self.init_skill_position(frame)
 
-
     def init_game_window(self):
         """
         初始化游戏窗口
@@ -82,10 +81,10 @@ class FishImagePosition:
 
     def init_skill_position(self, image):
         """ 初始化 钓鱼抛杆、收杆的位置"""
-        position = match_image(self.skill_throw, image)
+        position = match_image(self.skill_throw, image, True)
 
         if position is None:
-            position = match_image(self.skill_collect, image)
+            position = match_image(self.skill_collect, image, True)
             if position is None:
                 print(f'未找到钓鱼技图标, 执行退出！')
                 exit()
