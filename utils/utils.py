@@ -10,16 +10,14 @@ def get_hwnd():
     global hwnd
     if hwnd:
         return hwnd
-    
     hwnd = win32gui.FindWindow(None, "激战2")
-
+    
     return hwnd
 
 
 def get_frame(region):
     global camera
-
-    if not camera:
+    if camera is None:
         camera = dxcam.create()
 
     return camera.grab(region)
