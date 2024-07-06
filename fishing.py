@@ -58,8 +58,8 @@ class Fishing:
                 self.state = 2
                 key_down_up(get_hwnd(), 48 + 1)
                 time.sleep(0.05)
-                return
-            time.sleep(0.5)
+            else:
+                time.sleep(0.5)
         
         if self.state == 2:
             """ 在执行拉扯的操作 """
