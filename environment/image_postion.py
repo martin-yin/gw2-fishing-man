@@ -1,15 +1,10 @@
 from win32 import win32gui
 import cv2
 from utils.match_image import match_image
-from utils.utils import offset_position, real_position
-from utils.utils import Camera
-
+from utils.utils import get_frame, get_hwnd, offset_position, real_position
 
 class FishImagePosition:
-    def __init__(self, hwnd, carmera: Camera, config_position): 
-        self.carmera = carmera
-        self.hwnd = hwnd
-        
+    def __init__(self, config_position):  
         """钓鱼抛杆的图标"""
         self.skill_throw = cv2.imread('./images/skill_throw.png', cv2.IMREAD_GRAYSCALE)
         """钓鱼收杆的图标"""
@@ -35,8 +30,7 @@ class FishImagePosition:
 
         self.init_game_window()
         self.init_positions(config_position)
-
-        frame = self.carmera.get_frame(self.environment_position)
+        frame = get_frame(self.environment_position)
         self.init_skill_position(frame)
 
 
@@ -44,7 +38,7 @@ class FishImagePosition:
         """
         初始化游戏窗口
         """
-        left, top, right, bottom = win32gui.GetWindowRect(self.hwnd)
+        left, top, right, bottom = win32gui.GetWindowRect(get_hwnd())
         """ 游戏整体相对于window的位置 """
         self.environment_position = (left, top, right, bottom)
         """ 游戏的宽高 """

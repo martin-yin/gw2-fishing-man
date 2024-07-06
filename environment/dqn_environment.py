@@ -4,13 +4,13 @@ from win32 import win32gui
 import ctypes
 from environment.image_postion import FishPosition
 from utils.match_image import match_image
-from utils.utils import Camera, key_down, key_up
+from utils.utils import key_down, key_up
 
 """ 钓鱼环境 """
 class DQNFishing:
     def __int___(self, postion: FishPosition):
         self.fish_state = None
-        self.camera = Camera()
+        # self.camera = Camera()
         self.postion = postion
     
     """ 开始新一轮的钓鱼"""

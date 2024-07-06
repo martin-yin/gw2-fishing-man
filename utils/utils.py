@@ -3,13 +3,27 @@ from win32 import win32api, win32gui
 import dxcam
 import yaml
 
+camera = None
+hwnd = None
 
-class Camera:
-    def __init__(self):
-        self.camera = dxcam.create()
+def get_hwnd():
+    global hwnd
+    if hwnd:
+        return hwnd
+    
+    hwnd = win32gui.FindWindow(None, "激战2")
 
-    def get_frame(self, region):
-        return self.camera.grab(region=region)
+    return hwnd
+
+
+def get_frame(region):
+    global camera
+
+    if not camera:
+        camera = dxcam.create()
+
+    return camera.grab(region)
+
 
 # 参数左上右下
 def position_border_draw(box, color=(255, 0, 255)):
