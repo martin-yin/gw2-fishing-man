@@ -25,21 +25,16 @@ if __name__ == '__main__':
     print("开始钓鱼")
     while True:
         time.sleep(0.1)
-        fish_state = fish_state.get_state()  
-        
-        if done: 
-            break
-
         if fish_state == 1:
             print("等待鱼儿上钩")
             time.sleep(0.5)
         if fish_state == 2:
-            # 开始一轮训练
-            station = fishing.get_state()
+            pass
+            # state = fishing.get_state()
             # 选择动作
-            action = None
-            last_state = station
-            fishing.do_action(action)
-            next_station = fish_state()
+            # action = fishing.choose_action(state)
+            # s_, r = fishing.step(action)
+            # store_transition(state, action, r, s_)
+            
         
  

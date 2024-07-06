@@ -8,16 +8,15 @@ from utils.utils import get_frame, key_down, key_up
 
 """ 钓鱼环境 """
 class DQNFishing:
-    def __int___(self, drag_bar_position, drag_score_position):
-        self.fish_state = None
+    def __int___(self,  drag_bar_position, drag_score_position):
         self.drag_bar_position = drag_bar_position
         self.drag_score_position = drag_score_position
-    
+
     def get_state(self):
         """ 获取当前拖拽的状态"""
         return get_frame(self.drag_bar_position)
 
-    """ 返回 当前状态 和 分数 """
+    """ 返回 当前状态, 奖励分数 和 是否结束 """
     def step(self, action):
         self.do_action(action)
         time.sleep(0.01)
