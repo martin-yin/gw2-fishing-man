@@ -158,7 +158,7 @@ def extract_blue_area(image, draw=False):
         return (None, None)
     
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    lower_blue = np.array( [80, 100, 100])
+    lower_blue = np.array([80, 100, 100])
     upper_blue = np.array([110, 255, 255])
 
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
@@ -207,27 +207,26 @@ def match_hook(image, template_image, draw=False):
         return None, None
 
 
+# def get_score_width(image):
+#     # https://www.jiniannet.com/Page/allcolor 这里取得图片的相邻像素的颜色
+#     # 
+#     # 转化为HSV图像
+#     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+#     cv2.imwrite('hsvw.png', hsv_image)
 
-def get_score_width(image):
-    # https://www.jiniannet.com/Page/allcolor 这里取得图片的相邻像素的颜色
-    # 
-    # 转化为HSV图像
-    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    cv2.imwrite('hsvw.png', hsv_image)
+#     # 定义橙色的HSV阈值范围
+#     lower_orange = np.array([15, 162, 255])
+#     upper_orange = np.array([30, 162, 255])
 
-    # 定义橙色的HSV阈值范围
-    lower_orange = np.array([15, 162, 255])
-    upper_orange = np.array([30, 162, 255])
-
-    mask = cv2.inRange(hsv_image, lower_orange, upper_orange)
-    # 查找轮廓
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    if len(contours) > 0:
-        largest_contour = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(largest_contour)
+#     mask = cv2.inRange(hsv_image, lower_orange, upper_orange)
+#     # 查找轮廓
+#     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+#     if len(contours) > 0:
+#         largest_contour = max(contours, key=cv2.contourArea)
+#         x, y, w, h = cv2.boundingRect(largest_contour)
         
-        return w
-    return None
+#         return w
+#     return None
 
 
 # 临近颜色转 hsv

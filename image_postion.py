@@ -1,6 +1,6 @@
 from win32 import win32gui
 import cv2
-from utils.match_image import match_image
+from utils.match import match_image
 from utils.utils import get_frame, get_hwnd, offset_position, real_position
 
 class FishImagePosition:
@@ -82,14 +82,14 @@ class FishImagePosition:
 
     def init_skill_position(self, image):
         """ 初始化 钓鱼抛杆、收杆的位置"""
-        position = match_image(self.skill_throw, image)
+        position = match_image(self.skill_throw, image, True)
 
-        if len(position) == 0:
-            position = match_image(self.skill_collect, image)
-            if len(position) == 0:
+        if position is None:
+            position = match_image(self.skill_collect, image, True)
+            if position is None:
                 print(f'未找到钓鱼技图标, 执行退出！')
                 exit()
 
         game_postion = self.environment_position
-        self.skill_position = real_position(game_postion, position[0])
+        self.skill_position = real_position(game_postion, position)
 

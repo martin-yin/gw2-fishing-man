@@ -1,6 +1,6 @@
 import time
 import cv2
-from utils.match_image import extract_blue_area, extract_green_area, macth_red_exclamatory, match_hook, match_image
+from utils.match import  find_postion_by_color, match_image, rgbs2hsv
 from utils.utils import get_frame, get_hwnd, key_down, key_down_up, key_up
 
 class Fishing:
@@ -15,6 +15,10 @@ class Fishing:
 
         self.skill_position = skill_position
         self.exclamation_position = exclamation_position
+        self.exclamatory_colors = rgbs2hsv("#5032F7,#4E2EE2,#6C35FB,#8731FB,#5D26DD,#6625C8,#4A30DE,#5D1AA1,#461767")
+        self.drag_bar_center_colors = rgbs2hsv("#4DC663,#56E77F,#54FA88,#76FAA0,#76FEAA,#69F898,#4CFA98,#49F298,#6EFF76,#5EEF72")
+        self.drag_bar_box_colors = rgbs2hsv("#4AA3BA,#4CD5FE,#4CDAFF,#3BAEF5,#3BAEF5,#44C4EB,#3EB4D6,#44C8FE,#50C8E5")
+
         self.drag_hook_position = drag_hook_position
         self.state = None
         self.not_find_hook_count = 0
@@ -24,9 +28,9 @@ class Fishing:
         time.sleep(2)
         skill_image = get_frame(self.skill_position)
         position = match_image(self.skill_collect, skill_image)
-        if len(position) == 0:
+        if position is None:
             position = match_image(self.skill_throw, skill_image)
-            if len(position) == 0:
+            if position is None:
                 exit("未找到钓鱼技能")
             else:
                 key_down_up(get_hwnd(), 48 + 1)
@@ -49,8 +53,8 @@ class Fishing:
         
         if self.state == 1:
             exclamatory = get_frame(self.exclamation_position)
-            red_exclamatory = macth_red_exclamatory(exclamatory)
-            if red_exclamatory:
+            red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors, True)
+            if red_exclamatory is not None:
                 self.state = 2
                 key_down_up(get_hwnd(), 48 + 1)
                 time.sleep(0.05)
@@ -60,7 +64,7 @@ class Fishing:
         if self.state == 2:
             """ 在执行拉扯的操作 """
             tempalte = get_frame(self.drag_hook_position)
-            _, hook_position = match_hook(self.drag_hook, tempalte, False)
+            hook_position = match_image(self.drag_hook, tempalte, True)
             if hook_position is None:
                 self.not_find_hook_count += 1
                 print('未找到鱼钩图标')
@@ -69,14 +73,13 @@ class Fishing:
     def drag_action(self):
         hwnd = get_hwnd()
         bar_image = get_frame(self.drag_bar_position)
-        bar_center_box, _ = extract_green_area(bar_image, False)
-        bar_box, _ = extract_blue_area(bar_image, False)
+        bar_center_box  = find_postion_by_color(bar_image, self.drag_bar_center_colors, True)
+        bar_box = find_postion_by_color(bar_image,self.drag_bar_box_colors, True)
         if bar_center_box is None or bar_box is None:
             return
         
         bar_center_middle = (bar_center_box[0] + bar_center_box[2]) / 2
         bar_middle = (bar_box[0] + bar_box[2]) / 2
-
         dead_zone = 6
 
         if abs(bar_center_middle - bar_middle) <= dead_zone:

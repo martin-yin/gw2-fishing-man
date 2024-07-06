@@ -1,9 +1,9 @@
 import time
 import cv2
-from win32gui import FindWindow, SetForegroundWindow
+from win32gui import SetForegroundWindow
 from image_postion import FishImagePosition
 from fishing import Fishing
-from utils.utils import get_hwnd, load_config, position_border_draw
+from utils.utils import get_hwnd, load_config
 
 if __name__ == '__main__':
     hwnd = get_hwnd()
