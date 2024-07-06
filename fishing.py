@@ -53,7 +53,7 @@ class Fishing:
         
         if self.state == 1:
             exclamatory = get_frame(self.exclamation_position)
-            red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors, True)
+            red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors)
             if red_exclamatory is not None:
                 self.state = 2
                 key_down_up(get_hwnd(), 48 + 1)
@@ -64,7 +64,7 @@ class Fishing:
         if self.state == 2:
             """ 在执行拉扯的操作 """
             tempalte = get_frame(self.drag_hook_position)
-            hook_position = match_image(self.drag_hook, tempalte, True)
+            hook_position = match_image(self.drag_hook, tempalte)
             if hook_position is None:
                 self.not_find_hook_count += 1
                 print('未找到鱼钩图标')
@@ -73,8 +73,8 @@ class Fishing:
     def drag_action(self):
         hwnd = get_hwnd()
         bar_image = get_frame(self.drag_bar_position)
-        bar_center_box  = find_postion_by_color(bar_image, self.drag_bar_center_colors, True)
-        bar_box = find_postion_by_color(bar_image,self.drag_bar_box_colors, True)
+        bar_center_box  = find_postion_by_color(bar_image, self.drag_bar_center_colors)
+        bar_box = find_postion_by_color(bar_image,self.drag_bar_box_colors)
         if bar_center_box is None or bar_box is None:
             return
         

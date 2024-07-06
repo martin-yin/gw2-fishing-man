@@ -82,10 +82,10 @@ class FishImagePosition:
 
     def init_skill_position(self, image):
         """ 初始化 钓鱼抛杆、收杆的位置"""
-        position = match_image(self.skill_throw, image, True)
+        position = match_image(self.skill_throw, image)
 
         if position is None:
-            position = match_image(self.skill_collect, image, True)
+            position = match_image(self.skill_collect, image)
             if position is None:
                 print(f'未找到钓鱼技图标, 执行退出！')
                 exit()
