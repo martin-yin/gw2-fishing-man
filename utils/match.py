@@ -4,6 +4,8 @@ from PIL import Image
 import numpy as np
 import time
 
+from utils.utils import get_windows_scale
+
 # def get_score_width(image):
 #     # https://www.jiniannet.com/Page/allcolor 这里取得图片的相邻像素的颜色
 #     # 
@@ -61,27 +63,31 @@ def rgbs2hsv(rgbs):
     upper_color = np.array([max(hsv[:, 0]), max(hsv[:, 1]), max(hsv[:, 2])])
     return (lower_color, upper_color)
 
-def match_image(image, template, draw=False): 
+def match_image(image, template, draw=True): 
     """ 
-        image: 需要被匹配的图片
-        template: 模板图片
+        image: 截图图片
+        template: images下的图片
     """
-    if template is None:
+    if image is None:
         return None
     
-    template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-    match_result = cv2.matchTemplate(template_gray, image, cv2.TM_CCOEFF_NORMED)
+    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    dpi = get_windows_scale()
+    # 缩放后的模板图片
+    scaled_template = cv2.resize(template, (0, 0), fx=dpi, fy=dpi)
+    match_result = cv2.matchTemplate(image_gray, scaled_template,  cv2.TM_CCOEFF_NORMED)
     (min_val, max_val, min_loc, max_loc) = cv2.minMaxLoc(match_result)
-
+    
     if max_val > 0.9:
         (x, y) = max_loc
-        w, h = image.shape[:2]
+        w, h = template.shape[:2]
         end_x = x + w
         end_y = y + h
         position = (x, y, end_x, end_y)
         if draw:
-            cv2.rectangle(template, (x, y), (end_x, end_y), (0, 255, 0), 2)
-            cv2.imwrite(f'./debugger_images/match_image/{time.strftime("%Y%m%d_%H%M%S")}.png', template)
+            # cv2.rectangle(image, (x, y), (end_x, end_y), (0, 255, 0), 2)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            cv2.imwrite(f'./debugger_images/match_image/{time.strftime("%Y%m%d_%H%M%S")}.png', image)
         return position
     
     return None

@@ -1,5 +1,6 @@
+import ctypes
 import win32con
-from win32 import win32api, win32gui
+from win32 import win32api, win32gui, win32print
 import dxcam
 import yaml
 
@@ -19,15 +20,15 @@ def get_frame(region):
     global camera
     if camera is None:
         camera = dxcam.create()
-
+        
     return camera.grab(region)
 
 
 # 参数左上右下
-def position_border_draw(box, color=(255, 0, 255)):
+def draw_position_border(box, color=(255, 0, 255)):
     hwnd = win32gui.GetDesktopWindow()
     hwndDC = win32gui.GetWindowDC(hwnd)
-    hPen = win32gui.CreatePen(win32con.PS_SOLID, 3, win32api.RGB(color[0], color[1], color[2]))
+    hPen = win32gui.CreatePen(win32con.PS_SOLID, 1, win32api.RGB(color[0], color[1], color[2]))
     win32gui.SelectObject(hwndDC, hPen)
     hbrush = win32gui.GetStockObject(win32con.NULL_BRUSH)
     prebrush = win32gui.SelectObject(hwndDC, hbrush)
@@ -88,3 +89,17 @@ def load_config(file_path):
     with open(file_path, 'r') as file:
         config = yaml.safe_load(file)
     return config
+
+def get_windows_scale():
+    try:
+        # 调用 Windows API 函数获取缩放比例
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        scaling_factor = user32.GetDpiForSystem()
+ 
+        # 计算缩放比例
+        return scaling_factor / 96.0
+ 
+    except Exception as e:
+        exit("获取 windows dpi 失败")
+        return None

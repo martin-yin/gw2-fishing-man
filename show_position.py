@@ -3,7 +3,7 @@ import cv2
 from win32gui import SetForegroundWindow
 from image_postion import FishImagePosition
 from fishing import Fishing
-from utils.utils import get_hwnd, load_config
+from utils.utils import draw_position_border, get_hwnd, load_config
 
 if __name__ == '__main__':
     hwnd = get_hwnd()
@@ -17,7 +17,9 @@ if __name__ == '__main__':
     drag_hook = fish_image_positon.drag_hook_position
     drag_bar_position = fish_image_positon.drag_bar_position
     fishing = Fishing(skill, exclamation, drag_hook, drag_bar_position)
-    print("开始钓鱼")
-    fishing.reset()
+    print("绘制位置边框")
     while True:
-        fishing.get_state()
+        draw_position_border(skill)
+        draw_position_border(exclamation)
+        draw_position_border(drag_hook)
+        draw_position_border(drag_bar_position)

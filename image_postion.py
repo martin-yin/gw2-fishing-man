@@ -9,8 +9,6 @@ class FishImagePosition:
         self.skill_throw = cv2.imread('./images/skill_throw.png', cv2.IMREAD_GRAYSCALE)
         """钓鱼收杆的图标"""
         self.skill_collect = cv2.imread('./images/skill_collect.png', cv2.IMREAD_GRAYSCALE)
-        """收杆后钓力图标（用来判断是否正在跟鱼拉扯）"""
-        self.drag_hook = cv2.imread('./images/drag_hook.png', cv2.IMREAD_GRAYSCALE)
         """ 环境的位置、大小、中心位置 """
         self.environment_position = (0, 0, 0, 0)
         self.environment_size = (0, 0)
@@ -57,7 +55,6 @@ class FishImagePosition:
         exclamation_offset = config_position['exclamation_offset']
         drag_hook_offset = config_position['drag_hook_offset']
         drag_bar_offset = config_position['drag_bar_offset']
-        drag_score_offset = config_position['drag_score_offset']
          
         self.exclamation_position = offset_position(
             (center_x, game_postion[3], center_x, game_postion[3]), 
@@ -73,22 +70,16 @@ class FishImagePosition:
             (center_x, game_postion[3], center_x, game_postion[3]), 
             drag_bar_offset
         )
-        
-        self.drag_score_position = offset_position(
-            (center_x, game_postion[3], center_x, game_postion[3]), 
-            drag_score_offset
-        )
 
-    def init_skill_position(self, image):
+    def init_skill_position(self, frame):
         """ 初始化 钓鱼抛杆、收杆的位置"""
-        position = match_image(self.skill_throw, image, True)
-
+        position = match_image(frame, self.skill_throw)
         if position is None:
-            position = match_image(self.skill_collect, image, True)
+            position = match_image(frame, self.skill_collect)
             if position is None:
                 print(f'未找到钓鱼技图标, 执行退出！')
                 exit()
-
+        
         game_postion = self.environment_position
         self.skill_position = real_position(game_postion, position)
 

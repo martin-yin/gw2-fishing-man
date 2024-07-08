@@ -1,5 +1,5 @@
 position:
-  exclamation_offset: [-60, -762, 60, -602]
-  drag_hook_offset: [-214, -452, -166, -404]
-  drag_bar_offset: [-216, -490, 216, -452]
-  drag_score_offset:  [-159, -342, 159, -320]
+  exclamation_offset: [-40, -542, 40, -402]
+  drag_bar_offset: [-144, -332, 144, -304]
+  drag_hook_offset: [-144, -306, -110, -272]
+

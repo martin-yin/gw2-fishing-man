@@ -25,19 +25,19 @@ class Fishing:
         
     def reset(self):
         """ 通过技能来判断当前的钓鱼状态 """
-        time.sleep(2)
-        skill_image = get_frame(self.skill_position)
-        position = match_image(self.skill_collect, skill_image)
+        time.sleep(3)
+        frame = get_frame(self.skill_position)
+        position = match_image(frame, self.skill_collect)
         if position is None:
-            position = match_image(self.skill_throw, skill_image)
+            position = match_image(frame, self.skill_throw)
             if position is None:
                 exit("未找到钓鱼技能")
             else:
                 key_down_up(get_hwnd(), 48 + 1)
-                time.sleep(2)
-                self.state = 1
+                time.sleep(1)
+                self.state = 0
 
-        self.state = 1
+        self.state = 0
         self.not_find_hook_count = 0
 
     def get_state(self):
@@ -45,30 +45,35 @@ class Fishing:
             1: 等待鱼上钩
             2: 鱼上钩了拉扯
         """
-        print('当前状态：', self.state)
+
         if self.not_find_hook_count >= 30:
             print('重新获取钓鱼状态')
             self.reset()
             return
         
-        if self.state == 1:
+        if self.state == 0:
             exclamatory = get_frame(self.exclamation_position)
             red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors)
             if red_exclamatory is not None:
-                self.state = 2
+                self.state = 1
                 key_down_up(get_hwnd(), 48 + 1)
                 time.sleep(0.05)
             else:
                 time.sleep(0.5)
         
-        if self.state == 2:
+        if self.state == 1:
             """ 在执行拉扯的操作 """
-            tempalte = get_frame(self.drag_hook_position)
-            hook_position = match_image(self.drag_hook, tempalte)
-            if hook_position is None:
-                self.not_find_hook_count += 1
-                print('未找到鱼钩图标')
 
+            """ 这一段代码需要放到一个调度器中，定时执行 """
+            frame = get_frame(self.drag_hook_position)
+            drag_hook_position = match_image(frame, self.drag_hook)
+            time.sleep(0.1)
+            if drag_hook_position is None:
+                self.not_find_hook_count += 1
+            else:
+                self.not_find_hook_count = 0
+            """"""
+            self.drag_action()
 
     def drag_action(self):
         hwnd = get_hwnd()
