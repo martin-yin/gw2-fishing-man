@@ -1,4 +1,5 @@
 
+import os
 import cv2
 from PIL import Image
 import numpy as np
@@ -63,7 +64,7 @@ def rgbs2hsv(rgbs):
     upper_color = np.array([max(hsv[:, 0]), max(hsv[:, 1]), max(hsv[:, 2])])
     return (lower_color, upper_color)
 
-def match_image(image, template, draw=True): 
+def match_image(image, template, draw=False): 
     """ 
         image: 截图图片
         template: images下的图片
@@ -85,7 +86,8 @@ def match_image(image, template, draw=True):
         end_y = y + h
         position = (x, y, end_x, end_y)
         if draw:
-            # cv2.rectangle(image, (x, y), (end_x, end_y), (0, 255, 0), 2)
+            if not os.path.exists('./debugger_images/find_postion_by_color'):
+                os.makedirs('./debugger_images/find_postion_by_color')
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             cv2.imwrite(f'./debugger_images/match_image/{time.strftime("%Y%m%d_%H%M%S")}.png', image)
         return position
@@ -100,7 +102,7 @@ def find_postion_by_color(image, colors, draw=False):
     if image is None:
         return None
 
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV_FULL)
     lower_color = np.array(colors[0])
     upper_color = np.array(colors[1])
 
@@ -111,6 +113,9 @@ def find_postion_by_color(image, colors, draw=False):
         x, y, w, h = cv2.boundingRect(largest_contour)
         position = (x, y, x + w, y + h)
         if draw:
+            # 没有文件夹创建
+            if not os.path.exists('./debugger_images/find_postion_by_color'):
+                os.makedirs('./debugger_images/find_postion_by_color')
             cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
             cv2.imwrite(f'./debugger_images/find_postion_by_color/{time.strftime("%Y%m%d_%H%M%S")}.png', image)
         return position

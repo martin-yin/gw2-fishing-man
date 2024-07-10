@@ -1,5 +1,4 @@
 import time
-import cv2
 from win32gui import SetForegroundWindow
 from image_postion import FishImagePosition
 from fishing import Fishing
@@ -9,7 +8,7 @@ if __name__ == '__main__':
     hwnd = get_hwnd()
     SetForegroundWindow(hwnd)
     time.sleep(0.5)
-    config = load_config("./config.yaml")
+    config = load_config("./config-4k.yaml")
     # 获取图标位置
     fish_image_positon = FishImagePosition(config['position'])
     skill = fish_image_positon.skill_position

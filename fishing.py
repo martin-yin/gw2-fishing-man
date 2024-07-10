@@ -15,9 +15,10 @@ class Fishing:
 
         self.skill_position = skill_position
         self.exclamation_position = exclamation_position
-        self.exclamatory_colors = rgbs2hsv("#5032F7,#4E2EE2,#6C35FB,#8731FB,#5D26DD,#6625C8,#4A30DE,#5D1AA1,#461767")
-        self.drag_bar_center_colors = rgbs2hsv("#4DC663,#56E77F,#54FA88,#76FAA0,#76FEAA,#69F898,#4CFA98,#49F298,#6EFF76,#5EEF72")
-        self.drag_bar_box_colors = rgbs2hsv("#4AA3BA,#4CD5FE,#4CDAFF,#3BAEF5,#3BAEF5,#44C4EB,#3EB4D6,#44C8FE,#50C8E5")
+        
+        self.exclamatory_colors = ([200, 120, 80],[255, 230, 255])
+        self.drag_bar_center_colors =([70, 110, 110],[120, 255, 255])
+        self.drag_bar_box_colors = ([126, 0, 150],[160, 255, 255])
 
         self.drag_hook_position = drag_hook_position
         self.state = None
@@ -53,7 +54,7 @@ class Fishing:
         
         if self.state == 0:
             exclamatory = get_frame(self.exclamation_position)
-            red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors)
+            red_exclamatory = find_postion_by_color(exclamatory, self.exclamatory_colors, True)
             if red_exclamatory is not None:
                 self.state = 1
                 key_down_up(get_hwnd(), 48 + 1)
@@ -67,7 +68,7 @@ class Fishing:
             """ 这一段代码需要放到一个调度器中，定时执行 """
             frame = get_frame(self.drag_hook_position)
             drag_hook_position = match_image(frame, self.drag_hook)
-            time.sleep(0.1)
+            time.sleep(0.15)
             if drag_hook_position is None:
                 self.not_find_hook_count += 1
             else:
